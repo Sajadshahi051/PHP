@@ -1,0 +1,59 @@
+<?php
+// اطلاعات اتصال به پایگاه داده
+$host = "localhost";
+$username = "root";
+$password = "";
+$dbname = "your_database";
+
+try {
+    // اتصال به پایگاه داده
+    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // بازیابی داده‌ها از جدول
+    $stmt = $conn->prepare("SELECT id, name FROM your_table"); // جدول خود را تنظیم کنید
+    $stmt->execute();
+
+    // تبدیل داده‌ها به فرمت JSON
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode($result);
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX Select</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <label for="dynamicSelect">انتخاب کنید:</label>
+    <select id="dynamicSelect">
+        <option value="">لطفا انتخاب کنید</option>
+    </select>
+
+    <script>
+        $(document).ready(function() {
+            // ارسال درخواست AJAX برای دریافت داده‌ها
+            $.ajax({
+                url: 'fetch_data.php', // مسیر فایل PHP
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // اضافه کردن داده‌ها به select
+                    $.each(data, function(index, item) {
+                        $('#dynamicSelect').append(`<option value="${item.id}">${item.name}</option>`);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("خطا در دریافت داده‌ها: " + error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
