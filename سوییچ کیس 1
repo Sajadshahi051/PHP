@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ارسال خودکار با Ajax</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <form id="dayForm">
+        <label for="day">یک روز را انتخاب کنید:</label>
+        <select name="day" id="day">
+            <option value="">-- انتخاب کنید --</option>
+            <option value="شنبه">شنبه</option>
+            <option value="یک‌شنبه">یک‌شنبه</option>
+            <option value="دوشنبه">دوشنبه</option>
+            <option value="سه‌شنبه">سه‌شنبه</option>
+            <option value="چهارشنبه">چهارشنبه</option>
+            <option value="پنج‌شنبه">پنج‌شنبه</option>
+            <option value="جمعه">جمعه</option>
+        </select>
+
+    </form>
+	<?php
+    // تابعی برای دریافت پیام مناسب با رنگ برای روز هفته
+    function getDayMessage($day) {
+        $color = "";
+        switch ($day) {
+            case "شنبه":
+                return ["امروز شنبه است، شروع هفته!", "red"];
+            case "یک‌شنبه":
+                return ["امروز یک‌شنبه است.", "blue"];
+            case "دوشنبه":
+                return ["امروز دوشنبه است.", "green"];
+            case "سه‌شنبه":
+                return ["امروز سه‌شنبه است.", "purple"];
+            case "چهارشنبه":
+                return ["امروز چهارشنبه است.", "orange"];
+            case "پنج‌شنبه":
+                return ["امروز پنج‌شنبه است.", "brown"];
+            case "جمعه":
+                return ["امروز جمعه است، روز استراحت!", "black"];
+            default:
+                return ["لطفاً یک روز معتبر انتخاب کنید.", "gray"];
+        }
+    }
+
+    // بررسی ارسال فرم
+    if (isset($_POST['submit'])) {
+        $day = $_POST['day'];
+        list($message, $color) = getDayMessage($day);
+        echo "<p style='color: $color;'>$message</p>";
+    }
+    ?>
+
+</body>
+</html>
+    <p id="result"></p>
+
+    <script>
+        $(document).ready(function(){
+            $("#day").change(function(){
+                var selectedDay = $(this).val();
+
+                if(selectedDay === "") {
+                    $("#result").html("<p style='color: red;'>لطفاً یک روز انتخاب کنید!</p>");
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "process.php",
+                    data: { day: selectedDay },
+                    success: function(response){
+                        $("#result").html(response);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
