@@ -1,0 +1,21 @@
+<?php
+if (isset($_POST['day'])) {
+    $day = $_POST['day'];
+
+    function getDayMessage($day) {
+        switch ($day) {
+            case "شنبه": return ["امروز شنبه است، شروع هفته!", "red"];
+            case "یک‌شنبه": return ["امروز یک‌شنبه است.", "blue"];
+            case "دوشنبه": return ["امروز دوشنبه است.", "green"];
+            case "سه‌شنبه": return ["امروز سه‌شنبه است.", "purple"];
+            case "چهارشنبه": return ["امروز چهارشنبه است.", "orange"];
+            case "پنج‌شنبه": return ["امروز پنج‌شنبه است.", "brown"];
+            case "جمعه": return ["امروز جمعه است، روز استراحت!", "black"];
+            default: return ["لطفاً یک روز معتبر انتخاب کنید.", "gray"];
+        }
+    }
+
+    list($message, $color) = getDayMessage($day);
+    echo "<p style='color: $color;'>$message</p>";
+}
+?>
